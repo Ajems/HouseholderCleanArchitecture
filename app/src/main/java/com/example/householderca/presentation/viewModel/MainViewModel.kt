@@ -1,4 +1,4 @@
-package com.example.householderca.presentation
+package com.example.householderca.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import com.example.householderca.data.ShopListRepositoryImpl //TODO fix by DI
@@ -22,7 +22,7 @@ class MainViewModel: ViewModel() {
         removeShopItemUseCase.removeShopItem(shopItem)
     }
 
-    fun changeEnabledState(shopItem: ShopItem){
+    fun changeEnableState(shopItem: ShopItem){
         val newShopItem = shopItem.copy(enabled = !shopItem.enabled)
         editShopItemUseCase.editShopItem(newShopItem)
     }
