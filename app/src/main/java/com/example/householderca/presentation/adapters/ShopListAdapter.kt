@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.householderca.R
 import com.example.householderca.domain.pojo.ShopItem
+import com.example.householderca.presentation.ShopListDiffCallback
 
 class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
 
@@ -21,8 +23,10 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     var shopList = listOf<ShopItem>()
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
+            val callback = ShopListDiffCallback(shopList, value)
+            val diffResult = DiffUtil.calculateDiff(callback)
+            diffResult.dispatchUpdatesTo(this)
             field = value
-            notifyDataSetChanged() //Change
         }
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
@@ -39,7 +43,6 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
-        Log.d("onCreateVH", "VT $viewType")
         val layoutResource = when(viewType){
             VIEW_TYPE_ENABLED -> R.layout.shop_item_enabled
             VIEW_TYPE_DISABLED -> R.layout.shop_item_disabled
@@ -54,6 +57,7 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     }
 
     override fun onBindViewHolder(viewHolder: ShopItemViewHolder, position: Int) {
+        Log.d("onBindVH", "BindVH $position")
         val shopItem = shopList[position]
         viewHolder.tvName.text = shopItem.name
         viewHolder.tvCount.text = shopItem.count.toString()
