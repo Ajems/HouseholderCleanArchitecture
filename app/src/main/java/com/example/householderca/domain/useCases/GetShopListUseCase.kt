@@ -7,6 +7,7 @@ import com.example.householderca.domain.pojo.ShopItem
 class GetShopListUseCase(private val shopListRepository: ShopListRepository) {
 
     fun getShopList(): LiveData<List<ShopItem>>{
-        return shopListRepository.getShopList()
+        return shopListRepository.
+        getShopList()
     }
 }

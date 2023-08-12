@@ -1,4 +1,4 @@
-package com.example.householderca.presentation
+package com.example.householderca.presentation.diffUtil
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.householderca.domain.pojo.ShopItem
