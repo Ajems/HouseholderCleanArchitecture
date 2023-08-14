@@ -2,12 +2,15 @@ package com.example.householderca.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import com.example.householderca.R
 import com.example.householderca.domain.pojo.ShopItem
@@ -17,6 +20,7 @@ import com.google.android.material.textfield.TextInputLayout
 class ShopItemActivity : AppCompatActivity() {
 
     private lateinit var viewModel: ShopItemViewModel
+    private lateinit var rootConstraintLayout: ConstraintLayout
     private lateinit var tilName: TextInputLayout
     private lateinit var etName: EditText
     private lateinit var tilCount: TextInputLayout
@@ -31,10 +35,25 @@ class ShopItemActivity : AppCompatActivity() {
         parseIntent()
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
         initViews()
+        setStatusBarIconColor()
         addTextChangeListener()
         launchRightMode()
         setErrorObserve()
         setAvailableCloseObserve()
+    }
+
+    private fun setStatusBarIconColor() {
+        if (isLightTheme(this)) {
+            val systemDecorColor = (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+            window.decorView.systemUiVisibility = systemDecorColor
+        } else {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        }
+    }
+
+    private fun isLightTheme(context: Context): Boolean {
+        val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        return currentNightMode == Configuration.UI_MODE_NIGHT_NO
     }
 
     private fun launchRightMode() {
@@ -128,6 +147,7 @@ class ShopItemActivity : AppCompatActivity() {
     }
 
     private fun initViews(){
+        rootConstraintLayout = findViewById(R.id.rootConstraintLayout)
         tilName = findViewById(R.id.til_name)
         tilCount = findViewById(R.id.til_count)
         etName = findViewById(R.id.et_name)
