@@ -94,7 +94,8 @@ class ShopItemActivity : AppCompatActivity() {
         viewModel.shopItem.observe(this){
             etName.setText(it.name)
             etCount.setText(it.count.toString())
-
+            etName.requestFocus()
+            etName.setSelection(etName.length())
         }
         buttonSave.setOnClickListener {
             viewModel.editShopItem(etName.text?.toString(), etCount.text?.toString())
@@ -103,6 +104,7 @@ class ShopItemActivity : AppCompatActivity() {
 
 
     private fun launchAddMode(){
+        etName.requestFocus()
         buttonSave.setOnClickListener {
             viewModel.addShopItem(etName.text?.toString(), etCount.text?.toString())
         }
