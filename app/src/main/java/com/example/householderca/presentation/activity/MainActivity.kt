@@ -76,12 +76,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun dpToPx(dp: Double, context: Context): Int {
-        val scale: Float = context.resources.displayMetrics.density
-        return (dp * scale + 0.5f).toInt()
-    }
-
-
     @SuppressLint("DiscouragedApi", "InternalInsetResource")
     private fun calculateStatusAndNavigationBar() {
         val resourceIdSB = resources.getIdentifier("status_bar_height", "dimen", "android")
