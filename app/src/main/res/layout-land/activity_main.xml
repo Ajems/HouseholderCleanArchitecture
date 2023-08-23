@@ -25,12 +25,12 @@
         android:id="@+id/addShopItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:clickable="true"
-        android:contentDescription="@string/add_new_shop_item"
+        android:layout_margin="16dp"
         android:focusable="true"
+        android:contentDescription="@string/add_new_shop_item"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline_middle"
         app:srcCompat="@drawable/ic_add" />
 
     <androidx.constraintlayout.widget.Guideline
