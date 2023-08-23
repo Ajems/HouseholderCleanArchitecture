@@ -36,7 +36,6 @@ class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinished
             .commit()
     }
 
-
     private fun parseIntent(){
         if (!intent.hasExtra(EXTRA_SCREEN_MODE)){
             throw RuntimeException("Param screen mode is empty")

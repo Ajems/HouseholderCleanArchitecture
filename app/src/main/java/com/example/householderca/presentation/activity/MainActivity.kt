@@ -94,7 +94,6 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
         }
     }
 
-
     @SuppressLint("DiscouragedApi", "InternalInsetResource")
     private fun calculateStatusAndNavigationBar() {
         val resourceIdSB = resources.getIdentifier("status_bar_height", "dimen", "android")
