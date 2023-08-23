@@ -2,30 +2,15 @@ package com.example.householderca.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.ViewModelProvider
+import android.widget.Toast
 import com.example.householderca.R
 import com.example.householderca.domain.pojo.ShopItem
-import com.example.householderca.presentation.viewModel.ShopItemViewModel
-import com.google.android.material.textfield.TextInputLayout
+import com.example.householderca.presentation.fragment.ShopItemFragment
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
-    private lateinit var viewModel: ShopItemViewModel
-    private lateinit var rootConstraintLayout: ConstraintLayout
-    private lateinit var tilName: TextInputLayout
-    private lateinit var etName: EditText
-    private lateinit var tilCount: TextInputLayout
-    private lateinit var etCount: EditText
-    private lateinit var buttonSave: Button
     private var screenMode = MODE_UNKNOWN
     private var shopItemId = ShopItem.UNDEFINED_ID
 
@@ -33,102 +18,22 @@ class ShopItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
         parseIntent()
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-        initViews()
-        setStatusBarIconColor()
-        addTextChangeListener()
-        launchRightMode()
-        setErrorObserve()
-        setAvailableCloseObserve()
-    }
-
-    private fun setStatusBarIconColor() {
-        if (isLightTheme(this)) {
-            val systemDecorColor = (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
-            window.decorView.systemUiVisibility = systemDecorColor
-        } else {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        if (savedInstanceState == null) {
+            launchRightMode()
         }
-    }
-
-    private fun isLightTheme(context: Context): Boolean {
-        val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        return currentNightMode == Configuration.UI_MODE_NIGHT_NO
     }
 
     private fun launchRightMode() {
-        when (screenMode) {
-            MODE_EDIT -> launchEditMode()
-            MODE_ADD -> launchAddMode()
-        }
-    }
-
-    private fun setAvailableCloseObserve() {
-        viewModel.availableClose.observe(this) {
-            finish()
-        }
-    }
-
-    private fun setErrorObserve() {
-        viewModel.errorInputName.observe(this) {
-            val errorMessage = if (it) {
-                getString(R.string.error_input_name)
-            } else {
-                null
-            }
-            tilName.error = errorMessage
+        val fragment = when (screenMode) {
+            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(shopItemId)
+            MODE_ADD -> ShopItemFragment.newInstanceAddItem()
+            else -> throw RuntimeException("Unknown screen mode $screenMode")
         }
 
-        viewModel.errorInputCount.observe(this) {
-            val errorMessage = if (it) {
-                getString(R.string.error_input_count)
-            } else {
-                null
-            }
-            tilCount.error = errorMessage
-        }
-    }
-
-    private fun launchEditMode(){
-        viewModel.getShopItem(shopItemId)
-        viewModel.shopItem.observe(this){
-            etName.setText(it.name)
-            etCount.setText(it.count.toString())
-            etName.requestFocus()
-            etName.setSelection(etName.length())
-        }
-        buttonSave.setOnClickListener {
-            viewModel.editShopItem(etName.text?.toString(), etCount.text?.toString())
-        }
-    }
-
-
-    private fun launchAddMode(){
-        etName.requestFocus()
-        buttonSave.setOnClickListener {
-            viewModel.addShopItem(etName.text?.toString(), etCount.text?.toString())
-        }
-    }
-
-
-    private fun addTextChangeListener() {
-        etName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.resetErrorInputName()
-            }
-            override fun afterTextChanged(s: Editable?) {}
-
-        })
-
-        etCount.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.resetErrorInputCount()
-            }
-            override fun afterTextChanged(s: Editable?) {}
-
-        })
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.shop_item_container, fragment)
+            .commit()
     }
 
     private fun parseIntent(){
@@ -146,15 +51,6 @@ class ShopItemActivity : AppCompatActivity() {
             }
             shopItemId = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
         }
-    }
-
-    private fun initViews(){
-        rootConstraintLayout = findViewById(R.id.rootConstraintLayout)
-        tilName = findViewById(R.id.til_name)
-        tilCount = findViewById(R.id.til_count)
-        etName = findViewById(R.id.et_name)
-        etCount = findViewById(R.id.et_count)
-        buttonSave = findViewById(R.id.buttonSave)
     }
 
     companion object {
@@ -176,5 +72,10 @@ class ShopItemActivity : AppCompatActivity() {
             intent.putExtra(EXTRA_SHOP_ITEM_ID, shopItemId)
             return intent
         }
+    }
+
+    override fun onEditingFinished() {
+        Toast.makeText(this, "Success editing", Toast.LENGTH_SHORT).show()
+        finish()
     }
 }
