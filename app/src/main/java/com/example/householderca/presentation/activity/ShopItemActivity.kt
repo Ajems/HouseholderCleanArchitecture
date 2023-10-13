@@ -2,8 +2,10 @@ package com.example.householderca.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import com.example.householderca.databinding.ActivityShopItemBinding
 import com.example.householderca.domain.pojo.ShopItem
@@ -19,10 +21,26 @@ class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinished
         super.onCreate(savedInstanceState)
         binding = ActivityShopItemBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setEdgeToEdge()
         parseIntent()
         if (savedInstanceState == null) {
             launchRightMode()
         }
+    }
+
+    private fun setEdgeToEdge(){
+        if (isLightTheme(this)) {
+            val systemDecorColor = (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+            window.decorView.systemUiVisibility = systemDecorColor
+
+        } else {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        }
+    }
+
+    private fun isLightTheme(context: Context): Boolean {
+        val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        return currentNightMode == Configuration.UI_MODE_NIGHT_NO
     }
 
     private fun launchRightMode() {

@@ -5,7 +5,7 @@ import com.example.householderca.domain.pojo.ShopItem
 
 class AddShopItemUseCase(private val shopListRepository: ShopListRepository) {
 
-    fun addShopItem(shopItem: ShopItem){
+    suspend fun addShopItem(shopItem: ShopItem){
         shopListRepository.addShopItem(shopItem)
     }
 }
